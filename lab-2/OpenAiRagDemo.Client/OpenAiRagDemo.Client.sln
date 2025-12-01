@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenAiRagDemo.Client", "OpenAiRagDemo.Client.csproj", "{FC338B23-CAF3-E3C6-EC73-235AEC986C0D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FC338B23-CAF3-E3C6-EC73-235AEC986C0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC338B23-CAF3-E3C6-EC73-235AEC986C0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC338B23-CAF3-E3C6-EC73-235AEC986C0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC338B23-CAF3-E3C6-EC73-235AEC986C0D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B9D2606E-AD21-43D4-8333-5B774F4E5EA8}
+	EndGlobalSection
+EndGlobal

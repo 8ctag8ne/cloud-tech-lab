@@ -1,3 +1,4 @@
+//OpenAiRagDemo.Api/Models/BookChunk.cs
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Pgvector;

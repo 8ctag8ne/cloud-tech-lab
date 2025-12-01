@@ -1,3 +1,4 @@
+// OpenAiRagDemo.Api/Models/Book.cs
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

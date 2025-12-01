@@ -1,4 +1,4 @@
-// OpenAiTestController
+// OpenAiRagDemo.Api/Controllers/OpenAiTestController.cs
 using Microsoft.AspNetCore.Mvc;
 using OpenAiRagDemo.Api.Services.Interfaces;
 
@@ -53,7 +53,7 @@ public class OpenAiTestController : ControllerBase
         }
     }
 
-    [HttpPost("metadata")]
+    [HttpPost("metadata-from-text")]
     public async Task<IActionResult> TestMetadataExtraction([FromBody] TestEmbeddingRequest request)
     {
         try
@@ -72,52 +72,6 @@ public class OpenAiTestController : ControllerBase
         }
     }
 
-    [HttpGet("full")]
-    public async Task<IActionResult> FullTest()
-    {
-        try
-        {
-            var results = new Dictionary<string, object>();
-
-            _logger.LogInformation("Testing chat...");
-            var chatResponse = await _openAiService.TestChatAsync("Say 'API is working!' in a creative way");
-            results["chat"] = new { success = true, response = chatResponse };
-
-            _logger.LogInformation("Testing embedding...");
-            var embedding = await _openAiService.GenerateEmbeddingAsync("This is a test sentence");
-            results["embedding"] = new { success = true, dimension = embedding.Length };
-
-            _logger.LogInformation("Testing metadata extraction...");
-            var sampleText = """
-                The Great Gatsby
-                By F. Scott Fitzgerald
-
-                In my younger and more vulnerable years my father gave me some advice that I've been turning over in my mind ever since.
-                "Whenever you feel like criticizing any one," he told me, "just remember that all the people in this world haven't had the advantages that you've had."
-                """;
-            var metadata = await _openAiService.ExtractMetadataFromTextAsync(sampleText);
-            results["metadata"] = new { success = true, metadata };
-
-            return Ok(new 
-            { 
-                message = "All tests completed successfully!",
-                results
-            });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error in full test");
-            return StatusCode(500, new { error = ex.Message });
-        }
-    }
-
-    // ----------------- Нові ендпоїнти -----------------
-
-    /// <summary>
-    /// Витягування метаданих прямо з PDF
-    /// POST: api/openaitest/pdf-metadata
-    /// FormData: pdfFile
-    /// </summary>
     [HttpPost("pdf-metadata")]
     public async Task<IActionResult> ExtractPdfMetadata([FromForm] UploadFileDto dto)
     {

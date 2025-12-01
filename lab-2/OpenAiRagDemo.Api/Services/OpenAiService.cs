@@ -1,3 +1,4 @@
+//OpenAiRagDemo.Api/Services/OpenAiService.cs
 using System.Text;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -172,8 +173,8 @@ public class OpenAiService : IOpenAiService
                     : string.Empty;
 
                 if (markdown.StartsWith("```"))
-                markdown = markdown.Replace("```json", "").Replace("```", "").Trim();
-                
+                markdown = markdown.Replace("```markdown", "").Replace("```", "").Trim();
+
                 markdownBuilder.AppendLine(markdown.Trim());
                 markdownBuilder.AppendLine();
 

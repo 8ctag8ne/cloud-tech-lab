@@ -85,9 +85,9 @@ class Program
     static void ShowMainMenu()
     {
         Console.Clear();
-        WriteTitle("╔══════════════════════════════════════════╗");
-        WriteTitle("║      RAG KNOWLEDGE BASE MANAGER          ║");
-        WriteTitle("╚══════════════════════════════════════════╝");
+        WriteTitle("╔══════════════════════════════════════════════════════════════════════════════════════════════════════╗");
+        WriteTitle("║                                      RAG KNOWLEDGE BASE MANAGER                                      ║");
+        WriteTitle("╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝");
         Console.WriteLine();
         
         Console.WriteLine("📚 Books Management:");
@@ -153,7 +153,7 @@ class Program
             
             if (book.IsProcessed)
             {
-                WriteSuccess($"✓ Processed ({book.ChunkCount} chunks)");
+                WriteSuccess($"✓ Processed ({book.ChunksCount} chunks)");
             }
             else
             {
@@ -214,7 +214,7 @@ class Program
             
             if (book?.IsProcessed == true)
             {
-                WriteSuccess($"✓ Book automatically processed ({book.ChunkCount} chunks created)");
+                WriteSuccess($"✓ Book automatically processed ({book.ChunksCount} chunks created)");
             }
             else
             {
@@ -254,11 +254,11 @@ class Program
         if (book == null) return;
 
         Console.WriteLine();
-        Console.WriteLine($"╔═══════════════════════════════════════════════════╗");
+        Console.WriteLine($"╔══════════════════════════════════════════════════════════════════════════════════════════════════════╗");
         Console.WriteLine($"  Title: {book.Title ?? "Untitled"}");
         Console.WriteLine($"  Authors: {book.Authors ?? "Unknown"}");
         Console.WriteLine($"  Tags: {book.Tags ?? "None"}");
-        Console.WriteLine($"╚═══════════════════════════════════════════════════╝");
+        Console.WriteLine($"╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝");
         Console.WriteLine();
         
         if (!string.IsNullOrEmpty(book.Description))
@@ -276,7 +276,7 @@ class Program
         if (book.IsProcessed)
         {
             WriteSuccess($"✓ Processed on {book.ProcessedAt:yyyy-MM-dd HH:mm:ss}");
-            WriteInfo($"  Chunks: {book.ChunkCount}");
+            WriteInfo($"  Chunks: {book.ChunksCount}");
         }
         else
         {
@@ -560,7 +560,7 @@ class Program
         {
             var book = await response.Content.ReadFromJsonAsync<BookDto>();
             WriteSuccess($"✓ Book processed successfully!");
-            WriteInfo($"  Created {book?.ChunkCount} chunks");
+            WriteInfo($"  Created {book?.ChunksCount} chunks");
         }
         else
         {
@@ -571,9 +571,9 @@ class Program
 
     static void DisplayRagResponse(RagQueryResponse response)
     {
-        Console.WriteLine("╔════════════════════════════════════════════════════╗");
+        Console.WriteLine("╔══════════════════════════════════════════════════════════════════════════════════════════════════════╗");
         WriteTitle($"  Question: {response.Question}");
-        Console.WriteLine("╚════════════════════════════════════════════════════╝");
+        Console.WriteLine("╚══════════════════════════════════════════════════════════════════════════════════════════════════════╝");
         Console.WriteLine();
         
         Console.ForegroundColor = ConsoleColor.Cyan;
@@ -661,7 +661,7 @@ public class BookDto
     public bool IsProcessed { get; set; }
     public DateTime? ProcessedAt { get; set; }
     public string? ProcessingError { get; set; }
-    public int ChunkCount { get; set; }
+    public int ChunksCount { get; set; }
 }
 
 public class RagQueryRequest

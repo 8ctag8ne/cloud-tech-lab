@@ -1,4 +1,4 @@
-// TextChunkingService.cs
+// OpenAiRagDemo.Api/Services/TextChunkingService.cs
 using OpenAiRagDemo.Api.Services.Interfaces;
 
 namespace OpenAiRagDemo.Api.Services;
