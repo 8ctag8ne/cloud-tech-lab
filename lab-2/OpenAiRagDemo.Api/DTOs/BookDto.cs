@@ -8,7 +8,14 @@ public class BookDto
     public string? Tags { get; set; }
     public string? Description { get; set; }
     public string FilePath { get; set; } = string.Empty;
+    public long FileSize { get; set; }
     public DateTime UploadedAt { get; set; }
+    
+    // НОВІ ПОЛЯ
+    public bool IsProcessed { get; set; }
+    public DateTime? ProcessedAt { get; set; }
+    public string? ProcessingError { get; set; }
+    
     public int ChunksCount { get; set; }
 }
 

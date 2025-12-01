@@ -19,8 +19,8 @@ public class BookChunk
     [Required]
     public string Content { get; set; } = string.Empty;
 
-    [Column("page_number")]
-    public int? PageNumber { get; set; }
+    [Column("chunk_index")]
+    public int? ChunkIndex { get; set; }
 
     [Column("embedding")]
     public Vector? Embedding { get; set; }

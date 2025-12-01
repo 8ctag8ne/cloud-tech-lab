@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore.Storage;
 using OpenAI;
 using OpenAI.Chat;
 using OpenAI.Embeddings;
@@ -40,10 +41,13 @@ public class OpenAiService : IOpenAiService
         var completion = await chatClient.CompleteChatAsync(prompt);
         return completion.Value.Content.Count > 0 ? completion.Value.Content[0].Text : string.Empty;
     }
-
     public async Task<float[]> GenerateEmbeddingAsync(string text)
     {
         var emb = _client.GetEmbeddingClient(_embeddingModel);
+        
+        // Затримка залежно від розміру тексту (щоб уникнути rate limits)
+        await ApplyRateLimitDelay(text.Length);
+        
         var result = await emb.GenerateEmbeddingAsync(text);
         return result.Value.ToFloats().ToArray();
     }
@@ -51,8 +55,48 @@ public class OpenAiService : IOpenAiService
     public async Task<List<float[]>> GenerateEmbeddingsAsync(List<string> texts)
     {
         var emb = _client.GetEmbeddingClient(_embeddingModel);
-        var result = await emb.GenerateEmbeddingsAsync(texts);
-        return result.Value.Select(x => x.ToFloats().ToArray()).ToList();
+        var result = new List<float[]>();
+        
+        // Розраховуємо загальну кількість символів у батчі
+        int totalChars = texts.Sum(t => t.Length);
+        int batchLength = 100000;
+        for(int i = 0; i < texts.Count; i++)
+        {
+            int currentLength = 0;
+            int j = i;
+            List<string> batch = new List<string>();
+            for(; j < texts.Count; j++)
+            {
+                if(texts[j].Length + currentLength > batchLength)
+                {
+                    break;
+                }
+                batch.Add(texts[j]);
+                currentLength += texts[j].Length;
+            }
+            i = j - 1;
+            var embeddings = await emb.GenerateEmbeddingsAsync(batch);
+            result.AddRange([.. embeddings.Value.Select(x => x.ToFloats().ToArray())]);
+            await ApplyRateLimitDelay(currentLength);
+            currentLength = 0;
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Застосовує затримку для уникнення rate limits OpenAI
+    /// </summary>
+    private async Task ApplyRateLimitDelay(int characterCount)
+    {
+        // Базова затримка: 100ms на кожні 1000 символів
+        // Мінімум: 50ms, Максимум: 2000ms
+        int delayMs = Math.Clamp(characterCount / 100, 50, 1000);
+        
+        _logger.LogDebug("Applying rate limit delay: {DelayMs}ms for {CharCount} characters", 
+            delayMs, characterCount);
+        
+        await Task.Delay(delayMs);
     }
 
     /// <summary>
@@ -127,6 +171,9 @@ public class OpenAiService : IOpenAiService
                     ? completion.Value.Content[0].Text 
                     : string.Empty;
 
+                if (markdown.StartsWith("```"))
+                markdown = markdown.Replace("```json", "").Replace("```", "").Trim();
+                
                 markdownBuilder.AppendLine(markdown.Trim());
                 markdownBuilder.AppendLine();
 
@@ -242,5 +289,21 @@ public class OpenAiService : IOpenAiService
             _logger.LogError(ex, "Error extracting text from PDF");
             return string.Empty;
         }
+    }
+
+    public async Task<string> GenerateChatResponseAsync(string systemPrompt, string userPrompt)
+    {
+        var chatClient = _client.GetChatClient(_chatModel);
+        
+        var messages = new List<ChatMessage>
+        {
+            new SystemChatMessage(systemPrompt),
+            new UserChatMessage(userPrompt)
+        };
+
+        var completion = await chatClient.CompleteChatAsync(messages);
+        return completion.Value.Content.Count > 0 
+            ? completion.Value.Content[0].Text 
+            : string.Empty;
     }
 }

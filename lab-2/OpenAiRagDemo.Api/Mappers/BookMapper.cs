@@ -1,13 +1,11 @@
+// BookMappers.cs
 using OpenAiRagDemo.Api.DTOs;
 using OpenAiRagDemo.Api.Models;
 
 namespace OpenAiRagDemo.Api.Mappers;
 
-public static class BookMapper
+public static class BookMappers
 {
-    /// <summary>
-    /// Конвертує Book в BookDto
-    /// </summary>
     public static BookDto ToDto(this Book book)
     {
         return new BookDto
@@ -19,41 +17,38 @@ public static class BookMapper
             Description = book.Description,
             FilePath = book.FilePath,
             UploadedAt = book.UploadedAt,
+            IsProcessed = book.IsProcessed,
+            ProcessedAt = book.ProcessedAt,
+            ProcessingError = book.ProcessingError,
             ChunksCount = book.Chunks?.Count ?? 0
         };
     }
 
-    /// <summary>
-    /// Конвертує список Book в список BookDto
-    /// </summary>
-    public static List<BookDto> ToDto(this IEnumerable<Book> books)
+    public static IEnumerable<BookDto> ToDto(this IEnumerable<Book> books)
     {
-        return books.Select(b => b.ToDto()).ToList();
+        return books.Select(b => b.ToDto());
     }
 
-    /// <summary>
-    /// Створює Book з BookCreateDto
-    /// </summary>
     public static Book ToEntity(this BookCreateDto dto, string filePath)
     {
         return new Book
         {
+            Id = Guid.NewGuid(),
             Title = dto.Title,
             Authors = dto.Authors,
             Tags = dto.Tags,
             Description = dto.Description,
-            FilePath = filePath
+            FilePath = filePath,
+            UploadedAt = DateTime.UtcNow,
+            IsProcessed = false
         };
     }
 
-    /// <summary>
-    /// Оновлює Book з BookUpdateDto
-    /// </summary>
     public static void UpdateFromDto(this Book book, BookUpdateDto dto)
     {
-        if (dto.Title != null) book.Title = dto.Title;
-        if (dto.Authors != null) book.Authors = dto.Authors;
-        if (dto.Tags != null) book.Tags = dto.Tags;
-        if (dto.Description != null) book.Description = dto.Description;
+        book.Title = dto.Title;
+        book.Authors = dto.Authors;
+        book.Tags = dto.Tags;
+        book.Description = dto.Description;
     }
 }

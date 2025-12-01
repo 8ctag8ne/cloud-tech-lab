@@ -33,6 +33,13 @@ public class Book
     [Column("uploaded_at")]
     public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
 
+    [Column("is_processed")]
+    public bool IsProcessed { get; set; } = false;
+    [Column("processed_at")]
+    public DateTime? ProcessedAt { get; set; }
+    [Column("processing_error")]
+    public string? ProcessingError { get; set; }
+
     // Navigation property
     public ICollection<BookChunk> Chunks { get; set; } = new List<BookChunk>();
 }

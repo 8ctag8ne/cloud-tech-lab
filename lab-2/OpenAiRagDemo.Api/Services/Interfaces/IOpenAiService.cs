@@ -18,6 +18,8 @@ public interface IOpenAiService
     /// Генерує embeddings для списку текстів
     /// </summary>
     Task<List<float[]>> GenerateEmbeddingsAsync(List<string> texts);
+
+    Task<string> GenerateChatResponseAsync(string systemPrompt, string userPrompt);
     
     /// <summary>
     /// Витягує метадані з тексту книги за допомогою GPT
@@ -28,6 +30,7 @@ public interface IOpenAiService
         IFormFile pdfFile, 
         int maxPages = 10,
         int batchSize = 3);
+    public Task<string> ExtractTextFromPdfAsync(IFormFile pdfFile, int maxPages = 10);
 }
 
 public class BookMetadata

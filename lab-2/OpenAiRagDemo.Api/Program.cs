@@ -33,6 +33,8 @@ builder.Services.AddSingleton<IFileService, LocalFileService>();
 builder.Services.AddSingleton<IPdfService, PdfService>();
 // Реєструємо OpenAI сервіс (залежить від PdfService)
 builder.Services.AddSingleton<IOpenAiService, OpenAiService>();
+builder.Services.AddSingleton<ITextChunkingService, TextChunkingService>();
+builder.Services.AddScoped<IRagService, RagService>();
 
 // Configure CORS
 builder.Services.AddCors(options =>
