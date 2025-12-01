@@ -24,7 +24,7 @@ var connectionString = $"Host={Environment.GetEnvironmentVariable("DATABASE_HOST
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseNpgsql(connectionString);
+    options.UseNpgsql(connectionString, o => o.UseVector());
 });
 
 // Register services
