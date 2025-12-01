@@ -10,7 +10,7 @@ public class LocalFileService : IFileService
     public LocalFileService(IConfiguration configuration, ILogger<LocalFileService> logger)
     {
         _logger = logger;
-        _baseFolder = configuration["Storage:PdfFolder"] ?? "./uploads";
+        _baseFolder = configuration["STORAGE_PDF_FOLDER"] ?? "./uploads";
         
         // Створити базову папку, якщо не існує
         if (!Directory.Exists(_baseFolder))

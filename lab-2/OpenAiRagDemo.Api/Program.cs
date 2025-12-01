@@ -1,5 +1,12 @@
+using dotenv;
+using dotenv.net;
 using Microsoft.EntityFrameworkCore;
 using OpenAiRagDemo.Api.Data;
+using OpenAiRagDemo.Api.Services;
+using OpenAiRagDemo.Api.Services.Interfaces;
+
+// Завантажити .env файл
+DotEnv.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,13 +16,25 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Configure PostgreSQL with EF Core
+var connectionString = $"Host={Environment.GetEnvironmentVariable("DATABASE_HOST")};" +
+                       $"Port={ Environment.GetEnvironmentVariable("DATABASE_PORT")};" +
+                       $"Database={ Environment.GetEnvironmentVariable("DATABASE_NAME")};" +
+                       $"Username={ Environment.GetEnvironmentVariable("DATABASE_USER")};" +
+                       $"Password={ Environment.GetEnvironmentVariable("DATABASE_PASSWORD")}";
+
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    var connectionString = builder.Configuration.GetConnectionString("PostgreSQL");
-    options.UseNpgsql(connectionString, o => o.UseVector());
+    options.UseNpgsql(connectionString);
 });
 
-// Configure CORS (якщо потрібно для тестування)
+// Register services
+builder.Services.AddSingleton<IFileService, LocalFileService>();
+// Реєструємо PDF сервіс
+builder.Services.AddSingleton<IPdfService, PdfService>();
+// Реєструємо OpenAI сервіс (залежить від PdfService)
+builder.Services.AddSingleton<IOpenAiService, OpenAiService>();
+
+// Configure CORS
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
